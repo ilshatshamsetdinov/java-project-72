@@ -30,14 +30,19 @@ public class App {
     }
     public static void main(String[] args) {
         Javalin app = getApp();
-        app.start(8000);
+        app.start(getPort());
+    }
+
+    private static int getPort() {
+        String port = System.getenv().getOrDefault("PORT", "8080");
+        return Integer.valueOf(port);
     }
     private static void addRoutes(Javalin app) {
         app.get("/", RootController.welcome);
         app.routes(() -> {
             path("/urls", () -> {
-                get(UrlController.listUrls);
-                post(UrlController.addUrl);
+                get(UrlController.listURLs);
+                post(UrlController.createUrl);
                 path("/{id}", () -> {
                     get(UrlController.showUrl);
                     post("/checks", UrlController.checkUrl);
