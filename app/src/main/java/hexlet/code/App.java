@@ -15,6 +15,9 @@ import static io.javalin.apibuilder.ApiBuilder.get;
 
 
 public class App {
+    private static final String PORT = "8080";
+    private static final String DEVELOPMENT = "development";
+    private static final String PRODUCTION = "production";
     public static Javalin getApp() {
         Javalin app = Javalin.create(config -> {
             config.enableDevLogging();
@@ -32,10 +35,16 @@ public class App {
         Javalin app = getApp();
         app.start(getPort());
     }
+    private static boolean isProduction() {
+        return getMode().equals(PRODUCTION);
+    }
+    private static String getMode() {
+        return System.getenv().getOrDefault("APP_ENV", DEVELOPMENT);
+    }
 
     private static int getPort() {
-        String port = System.getenv().getOrDefault("PORT", "8080");
-        return Integer.valueOf(port);
+        String port = System.getenv().getOrDefault("PORT", PORT);
+        return Integer.parseInt(port);
     }
     private static void addRoutes(Javalin app) {
         app.get("/", RootController.welcome);
