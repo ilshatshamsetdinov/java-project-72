@@ -1,4 +1,6 @@
-FROM gradle:7.4.0-jdk17
+FROM gradle:7.4.2-jdk17
+
+ENV APP_ENV=dev
 
 WORKDIR /app
 
