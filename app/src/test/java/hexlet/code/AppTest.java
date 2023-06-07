@@ -39,13 +39,9 @@ public class AppTest {
 
     @BeforeAll
     public static void beforeAll() throws IOException {
-        // Получаем инстанс приложения
         app = App.getApp();
-        // Запускаем приложение на рандомном порту
         app.start(0);
-        // Получаем порт, на котором запустилось приложение
         int port = app.port();
-        // Формируем базовый URL
         baseUrl = "http://localhost:" + port;
         database = DB.getDefault();
 
@@ -61,7 +57,6 @@ public class AppTest {
     public static void afterAll() throws IOException {
         app.stop();
 
-        // Shut down the server. Instances cannot be reused.
         server.shutdown();
     }
 
@@ -87,16 +82,13 @@ public class AppTest {
 
     @Test
     void testAddCorrectUrl() {
-
         String testUrl = "https://ya.ru";
 
-        // Выполняем POST запрос при помощи агента Unirest
         HttpResponse responsePost = Unirest
                 .post(baseUrl + "/urls")
                 .field("url", testUrl)
                 .asEmpty();
 
-        // Проверяем статус ответа
         assertThat(responsePost.getStatus()).isEqualTo(302);
         assertThat(responsePost.getHeaders().getFirst("Location")).isEqualTo("/urls");
 
@@ -107,7 +99,6 @@ public class AppTest {
         assertThat(body).contains(testUrl);
         assertThat(body).contains("Страница успешно добавлена");
 
-        // Проверяем, что ссылка добавлена в БД
         Url actualUrl = new QUrl()
                 .name.equalTo(testUrl)
                 .findOne();
@@ -118,16 +109,13 @@ public class AppTest {
 
     @Test
     void testAddIncorrectUrl() {
-
         String testUrl = "ya.ru";
 
-        // Выполняем POST запрос при помощи агента Unirest
         HttpResponse responsePost = Unirest
                 .post(baseUrl + "/urls")
                 .field("url", testUrl)
                 .asEmpty();
 
-        // Проверяем статус ответа
         assertThat(responsePost.getStatus()).isEqualTo(302);
         assertThat(responsePost.getHeaders().getFirst("Location")).isEqualTo("/");
 
@@ -137,7 +125,6 @@ public class AppTest {
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(body).contains("Некорректный URL");
 
-        // Проверяем, что ссылка не добавлена в БД
         Url actualUrl = new QUrl()
                 .name.equalTo(testUrl)
                 .findOne();
@@ -148,16 +135,12 @@ public class AppTest {
 
     @Test
     void testListUrls() {
-        // Выполняем GET запрос на адрес http://localhost:port/urls
         HttpResponse<String> response = Unirest
                 .get(baseUrl + "/urls")
                 .asString();
-        // Получаем тело ответа
         String content = response.getBody();
 
-        // Проверяем код ответа
         assertThat(response.getStatus()).isEqualTo(200);
-        // Проверяем, что страница содержит определенный текст
         assertThat(content.contains("https://vk.com"));
         assertThat(content.contains("https://github.com"));
     }
@@ -191,9 +174,7 @@ public class AppTest {
         HttpResponse<String> response = Unirest
                 .get(baseUrl + "/urls/1")
                 .asString();
-        // Проверяем код ответа
         assertThat(response.getStatus()).isEqualTo(200);
-        // Проверяем, что страница содержит определенный текст
         assertThat(response.getBody()).contains("https://vk.com");
     }
 
