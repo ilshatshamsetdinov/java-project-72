@@ -5,15 +5,11 @@ import hexlet.code.domain.UrlCheck;
 import io.ebean.PagedList;
 import io.javalin.http.Handler;
 import io.javalin.http.NotFoundResponse;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
-
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
 import hexlet.code.domain.query.QUrl;
 import hexlet.code.domain.query.QUrlCheck;
 import kong.unirest.HttpResponse;
@@ -22,9 +18,7 @@ import kong.unirest.UnirestException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
 import static io.ebean.DB.save;
-
 
 public class UrlController {
     public static Handler listURLs = ctx -> {
@@ -59,7 +53,7 @@ public class UrlController {
         URL url;
 
         try {
-            url = new URL(Objects.requireNonNull(name));
+            url = new URL(name);
         } catch (MalformedURLException e) {
             ctx.sessionAttribute("flash", "Некорректный URL");
             ctx.sessionAttribute("flash-type", "danger");
@@ -96,7 +90,7 @@ public class UrlController {
                 .findOne();
 
         if (url == null) {
-            throw new NotFoundResponse();
+            throw new NotFoundResponse("Странница не найдена");
         }
 
         List<UrlCheck> urlChecks = new QUrlCheck()

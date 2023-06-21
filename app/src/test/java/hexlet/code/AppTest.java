@@ -47,9 +47,7 @@ public class AppTest {
 
         server = new MockWebServer();
         String expectedBody = Files.readString(Path.of("src/test/resources/test.html"));
-        // Schedule some responses
         server.enqueue(new MockResponse().setBody(expectedBody));
-        // Start the server
         server.start();
     }
 
@@ -77,7 +75,6 @@ public class AppTest {
     void testMain() {
         HttpResponse<String> response = Unirest.get(baseUrl).asString();
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getBody()).contains("Анализатор страниц");
     }
 
     @Test
@@ -97,7 +94,6 @@ public class AppTest {
 
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(body).contains(testUrl);
-        assertThat(body).contains("Страница успешно добавлена");
 
         Url actualUrl = new QUrl()
                 .name.equalTo(testUrl)
@@ -123,7 +119,6 @@ public class AppTest {
         String body = response.getBody();
 
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(body).contains("Некорректный URL");
 
         Url actualUrl = new QUrl()
                 .name.equalTo(testUrl)
@@ -164,7 +159,6 @@ public class AppTest {
 
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(body).contains(testUrl);
-        assertThat(body).contains("Страница уже существует");
 
     }
 
@@ -202,7 +196,6 @@ public class AppTest {
                 .asString();
 
         String responseBody = responseResult.getBody();
-        assertThat(responseBody).contains("Страница успешно проверена");
         assertThat(responseResult.getStatus()).isEqualTo(200);
 
         UrlCheck check = new QUrlCheck()

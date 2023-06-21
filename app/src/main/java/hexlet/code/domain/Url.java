@@ -13,13 +13,12 @@ import io.ebean.annotation.WhenCreated;
 
 @Entity
 public final class Url extends Model {
-    private String name;
-
     @Id
     private long id;
 
     @WhenCreated
     private Instant createdAt;
+    private String name;
 
     public Url() {
     }
